@@ -3,11 +3,13 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Save, X } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
+import { SubtleBackground } from '@/components/SubtleBackground';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { FileUpload } from '@/components/FileUpload';
 import {
   Select,
   SelectContent,
@@ -76,7 +78,8 @@ const CreateSnippet = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      <SubtleBackground />
       <Navbar />
 
       <div className="container mx-auto px-4 pt-24 pb-16 max-w-4xl">
@@ -112,7 +115,7 @@ const CreateSnippet = () => {
           transition={{ duration: 0.4, delay: 0.1 }}
         >
           {/* Basic Info Card */}
-          <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+          <div className="bg-card/80 backdrop-blur-sm rounded-xl border border-border p-6 space-y-6">
             <h2 className="font-heading font-semibold text-lg">Basic Information</h2>
             
             <div className="grid md:grid-cols-2 gap-6">
@@ -198,37 +201,30 @@ const CreateSnippet = () => {
           </div>
 
           {/* Sample Data Card */}
-          <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-            <h2 className="font-heading font-semibold text-lg">Sample Data</h2>
+          <div className="bg-card/80 backdrop-blur-sm rounded-xl border border-border p-6 space-y-6">
+            <div>
+              <h2 className="font-heading font-semibold text-lg">Sample Data</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Upload CSV or Excel files for sample input and expected output
+              </p>
+            </div>
             
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="inputSample">Sample Input</Label>
-                <Textarea
-                  id="inputSample"
-                  value={inputSample}
-                  onChange={(e) => setInputSample(e.target.value)}
-                  placeholder="Paste sample input data..."
-                  rows={6}
-                  className="font-mono text-sm"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="outputSample">Expected Output</Label>
-                <Textarea
-                  id="outputSample"
-                  value={outputSample}
-                  onChange={(e) => setOutputSample(e.target.value)}
-                  placeholder="Paste expected output..."
-                  rows={6}
-                  className="font-mono text-sm"
-                />
-              </div>
+              <FileUpload
+                label="Sample Input"
+                value={inputSample}
+                onChange={setInputSample}
+              />
+              <FileUpload
+                label="Expected Output"
+                value={outputSample}
+                onChange={setOutputSample}
+              />
             </div>
           </div>
 
           {/* Code Card */}
-          <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+          <div className="bg-card/80 backdrop-blur-sm rounded-xl border border-border p-6 space-y-6">
             <h2 className="font-heading font-semibold text-lg">Code *</h2>
             
             <Textarea

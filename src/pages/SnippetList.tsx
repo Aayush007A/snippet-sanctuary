@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Zap, Globe } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
+import { SubtleBackground } from '@/components/SubtleBackground';
 import { SnippetCard } from '@/components/SnippetCard';
 import { Button } from '@/components/ui/button';
 import { mockSnippets } from '@/data/mockData';
@@ -19,7 +20,8 @@ const SnippetList = () => {
   const isJet = type?.toLowerCase() === 'jet';
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      <SubtleBackground />
       <Navbar />
 
       <div className="container mx-auto px-4 pt-24 pb-16">

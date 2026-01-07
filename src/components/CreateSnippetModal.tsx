@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { FileUpload } from '@/components/FileUpload';
 import {
   Select,
   SelectContent,
@@ -204,28 +205,16 @@ export const CreateSnippetModal = ({ isOpen, onClose }: CreateSnippetModalProps)
 
               {/* Sample Input/Output */}
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="inputSample">Sample Input</Label>
-                  <Textarea
-                    id="inputSample"
-                    value={inputSample}
-                    onChange={(e) => setInputSample(e.target.value)}
-                    placeholder="Paste sample input data..."
-                    rows={4}
-                    className="font-mono text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="outputSample">Expected Output</Label>
-                  <Textarea
-                    id="outputSample"
-                    value={outputSample}
-                    onChange={(e) => setOutputSample(e.target.value)}
-                    placeholder="Paste expected output..."
-                    rows={4}
-                    className="font-mono text-sm"
-                  />
-                </div>
+                <FileUpload
+                  label="Sample Input"
+                  value={inputSample}
+                  onChange={setInputSample}
+                />
+                <FileUpload
+                  label="Expected Output"
+                  value={outputSample}
+                  onChange={setOutputSample}
+                />
               </div>
 
               {/* Code */}
