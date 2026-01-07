@@ -4,9 +4,12 @@ import { Search, Code2, Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { currentUser } from '@/data/mockData';
+import { useTheme } from '@/hooks/useTheme';
 
 export const Navbar = () => {
+  const { theme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -31,7 +34,11 @@ export const Navbar = () => {
   return (
     <motion.header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'navbar-scrolled' : 'bg-transparent'
+        isScrolled 
+          ? theme === 'dark' 
+            ? 'bg-background/95 backdrop-blur-md border-b border-border' 
+            : 'navbar-scrolled' 
+          : 'bg-transparent'
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -66,8 +73,9 @@ export const Navbar = () => {
           </div>
         </form>
 
-        {/* User Profile - Desktop */}
+        {/* User Profile & Theme Toggle - Desktop */}
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           <div className="text-right">
             <p className="text-sm font-medium text-foreground">{currentUser.name}</p>
             <p className="text-xs text-muted-foreground">{currentUser.email}</p>
@@ -113,15 +121,18 @@ export const Navbar = () => {
                   />
                 </div>
               </form>
-              <div className="flex items-center gap-3 pt-2 border-t border-border">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
-                  <AvatarFallback>{currentUser.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-sm font-medium">{currentUser.name}</p>
-                  <p className="text-xs text-muted-foreground">{currentUser.email}</p>
+              <div className="flex items-center justify-between pt-2 border-t border-border">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                    <AvatarFallback>{currentUser.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">{currentUser.name}</p>
+                    <p className="text-xs text-muted-foreground">{currentUser.email}</p>
+                  </div>
                 </div>
+                <ThemeToggle />
               </div>
             </div>
           </motion.div>

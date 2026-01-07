@@ -50,6 +50,9 @@
     
     --navbar-height: 4rem;
     
+    --table-header-bg: 210 40% 96%;
+    --table-row-hover: 210 40% 98%;
+    
     --python-color: 47 100% 62%;
     --scala-color: 0 68% 56%;
     --sql-color: 199 89% 48%;
@@ -92,6 +95,13 @@
     --border: 217 33% 17%;
     --input: 217 33% 17%;
     --ring: 212 27% 84%;
+    
+    --glass-bg: rgba(15, 23, 42, 0.85);
+    --glass-border: rgba(51, 65, 85, 0.5);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    
+    --table-header-bg: 217 33% 17%;
+    --table-row-hover: 217 33% 14%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -166,15 +176,15 @@
   }
 
   .language-badge-python {
-    @apply bg-yellow-100 text-yellow-800 border-yellow-200;
+    @apply bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800;
   }
 
   .language-badge-scala {
-    @apply bg-red-100 text-red-800 border-red-200;
+    @apply bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800;
   }
 
   .language-badge-sql {
-    @apply bg-blue-100 text-blue-800 border-blue-200;
+    @apply bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800;
   }
 
   .pulse-animation {
