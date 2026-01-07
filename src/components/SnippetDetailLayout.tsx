@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CodeEditor } from './CodeEditor';
-import { DataPanel } from './DataPanel';
+import { CSVTableViewer } from './CSVTableViewer';
 import { CommentCard } from './CommentCard';
 import { AddReviewForm } from './AddReviewForm';
 import { currentUser, type Snippet } from '@/data/mockData';
@@ -107,10 +107,10 @@ export const SnippetDetailLayout = ({ snippet }: SnippetDetailLayoutProps) => {
             transition={{ duration: 0.4, delay: 0.1 }}
           >
             <div className="h-[250px]">
-              <DataPanel title="Sample Input" data={snippet.inputSample} />
+              <CSVTableViewer title="Sample Input (CSV/Excel)" data={snippet.inputSample} />
             </div>
             <div className="h-[250px]">
-              <DataPanel title="Expected Output" data={snippet.outputSample} />
+              <CSVTableViewer title="Expected Output (CSV/Excel)" data={snippet.outputSample} />
             </div>
           </motion.div>
 

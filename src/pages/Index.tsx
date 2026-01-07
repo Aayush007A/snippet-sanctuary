@@ -5,6 +5,7 @@ import { Navbar } from '@/components/Navbar';
 import { HomeCards } from '@/components/HomeCards';
 import { TagFilter } from '@/components/TagFilter';
 import { SnippetCard } from '@/components/SnippetCard';
+import { SubtleBackground } from '@/components/SubtleBackground';
 import { mockSnippets } from '@/data/mockData';
 
 const Index = () => {
@@ -21,7 +22,8 @@ const Index = () => {
     : mockSnippets;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      <SubtleBackground />
       <Navbar />
       
       {/* Hero Section */}
