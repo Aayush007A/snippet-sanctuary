@@ -89,7 +89,7 @@ export const HomeCards = () => {
     <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
       <HomeCard
         title="JET Snippets"
-        description="High-performance data processing snippets for JET pipelines. Spark, Python, and SQL transformations optimized for scale."
+        description="Browse and create data processing snippets for JET pipelines. Spark, Python, and SQL transformations."
         icon={<Zap className="w-8 h-8 text-primary-foreground" />}
         gradient="gradient-jet"
         delay={0.1}
@@ -98,7 +98,7 @@ export const HomeCards = () => {
       
       <HomeCard
         title="Omnia Snippets"
-        description="Comprehensive analytics and reporting snippets for Omnia workflows. Query templates and data utilities."
+        description="Browse and create analytics snippets for Omnia workflows. Query templates and data utilities."
         icon={<Globe className="w-8 h-8 text-primary-foreground" />}
         gradient="gradient-omnia"
         delay={0.2}
@@ -106,8 +106,8 @@ export const HomeCards = () => {
       />
       
       <HomeCard
-        title="Create New"
-        description="Share your code with the team. Create, document, and publish snippets for others to discover and use."
+        title="Create Snippet"
+        description="Add new code snippets under JET or Omnia categories. Share your solutions with the team."
         icon={<Plus className="w-8 h-8 text-primary-foreground" />}
         gradient="gradient-create"
         delay={0.3}
