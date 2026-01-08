@@ -6,26 +6,23 @@ import { python } from '@codemirror/lang-python';
 import { sql } from '@codemirror/lang-sql';
 import { javascript } from '@codemirror/lang-javascript';
 import { Button } from '@/components/ui/button';
-import type { Language } from '@/data/mockData';
+import { useTheme } from '@/hooks/useTheme';
 
 interface CodeEditorProps {
   code: string;
-  language: Language;
+  language: string;
   isAuthor: boolean;
   onSave?: (code: string) => void;
 }
 
-const getLanguageExtension = (language: Language) => {
-  switch (language) {
-    case 'Python':
-      return python();
-    case 'SQL':
-      return sql();
-    case 'Spark Scala':
-      return javascript({ jsx: false, typescript: true });
-    default:
-      return python();
+const getLanguageExtension = (language: string) => {
+  const lang = language.toLowerCase();
+  if (lang.includes('python')) return python();
+  if (lang.includes('sql')) return sql();
+  if (lang.includes('scala') || lang.includes('javascript') || lang.includes('java')) {
+    return javascript({ jsx: false, typescript: true });
   }
+  return python();
 };
 
 export const CodeEditor = ({ code, language, isAuthor, onSave }: CodeEditorProps) => {
@@ -123,13 +120,13 @@ export const CodeEditor = ({ code, language, isAuthor, onSave }: CodeEditorProps
       </div>
 
       {/* Code Area */}
-      <div className="overflow-auto max-h-[500px] scrollbar-thin">
+      <div className="overflow-auto max-h-[70vh] scrollbar-thin">
         <CodeMirror
           value={isEditing ? editedCode : code}
           onChange={(value) => setEditedCode(value)}
           extensions={[getLanguageExtension(language)]}
           editable={isEditing}
-          theme="light"
+          theme={theme === 'dark' ? 'dark' : 'light'}
           basicSetup={{
             lineNumbers: true,
             highlightActiveLineGutter: true,
@@ -142,3 +139,87 @@ export const CodeEditor = ({ code, language, isAuthor, onSave }: CodeEditorProps
     </div>
   );
 };
+
+// Add hook usage
+const CodeEditorWithTheme = (props: CodeEditorProps) => {
+  const { theme } = useTheme();
+  return <CodeEditorInner {...props} theme={theme} />;
+};
+
+const CodeEditorInner = ({ code, language, isAuthor, onSave, theme }: CodeEditorProps & { theme: string }) => {
+  const [copied, setCopied] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedCode, setEditedCode] = useState(code);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSave = () => {
+    onSave?.(editedCode);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditedCode(code);
+    setIsEditing(false);
+  };
+
+  return (
+    <div className="code-container relative h-full">
+      <div className="flex items-center justify-between px-4 py-3 bg-secondary/50 border-b border-border">
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-destructive/80" />
+            <div className="w-3 h-3 rounded-full bg-yellow-400" />
+            <div className="w-3 h-3 rounded-full bg-green-500" />
+          </div>
+          <span className="text-sm font-medium text-muted-foreground">{language}</span>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          {isEditing ? (
+            <>
+              <Button size="sm" variant="ghost" onClick={handleCancel} className="h-8 gap-1.5">
+                <X className="w-4 h-4" />
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleSave} className="h-8 gap-1.5">
+                <Save className="w-4 h-4" />
+                Save
+              </Button>
+            </>
+          ) : (
+            <>
+              {isAuthor && (
+                <Button size="sm" variant="outline" onClick={() => setIsEditing(true)} className="h-8 gap-1.5">
+                  <Edit2 className="w-4 h-4" />
+                  Edit
+                </Button>
+              )}
+              <Button size="sm" onClick={handleCopy} className="h-8 gap-1.5">
+                {copied ? <><Check className="w-4 h-4" />Copied!</> : <><Copy className="w-4 h-4" />Copy</>}
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="overflow-auto max-h-[70vh] scrollbar-thin">
+        <CodeMirror
+          value={isEditing ? editedCode : code}
+          onChange={(value) => setEditedCode(value)}
+          extensions={[getLanguageExtension(language)]}
+          editable={isEditing}
+          theme={theme === 'dark' ? 'dark' : 'light'}
+          basicSetup={{ lineNumbers: true, highlightActiveLineGutter: true, highlightActiveLine: isEditing, foldGutter: true }}
+          className="text-sm"
+        />
+      </div>
+    </div>
+  );
+};
+
+export { CodeEditorWithTheme as CodeEditor };
