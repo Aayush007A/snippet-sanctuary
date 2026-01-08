@@ -93,7 +93,7 @@ export const HomeCards = () => {
         icon={<Zap className="w-8 h-8 text-primary-foreground" />}
         gradient="gradient-jet"
         delay={0.1}
-        onClick={() => navigate('/snippets/jet')}
+        onClick={() => navigate('/category/jet')}
       />
       
       <HomeCard
@@ -102,7 +102,7 @@ export const HomeCards = () => {
         icon={<Globe className="w-8 h-8 text-primary-foreground" />}
         gradient="gradient-omnia"
         delay={0.2}
-        onClick={() => navigate('/snippets/omnia')}
+        onClick={() => navigate('/category/omnia')}
       />
       
       <HomeCard
@@ -111,7 +111,7 @@ export const HomeCards = () => {
         icon={<Plus className="w-8 h-8 text-primary-foreground" />}
         gradient="gradient-create"
         delay={0.3}
-        onClick={() => navigate('/create')}
+        onClick={() => navigate('/category/jet')}
         isCreate
       />
     </div>
