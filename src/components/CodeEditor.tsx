@@ -26,6 +26,7 @@ const getLanguageExtension = (language: string) => {
 };
 
 export const CodeEditor = ({ code, language, isAuthor, onSave }: CodeEditorProps) => {
+  const { theme } = useTheme();
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedCode, setEditedCode] = useState(code);
@@ -47,7 +48,7 @@ export const CodeEditor = ({ code, language, isAuthor, onSave }: CodeEditorProps
   };
 
   return (
-    <div className="code-container relative">
+    <div className="code-container relative h-full">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-secondary/50 border-b border-border">
         <div className="flex items-center gap-3">
@@ -62,20 +63,11 @@ export const CodeEditor = ({ code, language, isAuthor, onSave }: CodeEditorProps
         <div className="flex items-center gap-2">
           {isEditing ? (
             <>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={handleCancel}
-                className="h-8 gap-1.5"
-              >
+              <Button size="sm" variant="ghost" onClick={handleCancel} className="h-8 gap-1.5">
                 <X className="w-4 h-4" />
                 Cancel
               </Button>
-              <Button
-                size="sm"
-                onClick={handleSave}
-                className="h-8 gap-1.5"
-              >
+              <Button size="sm" onClick={handleSave} className="h-8 gap-1.5">
                 <Save className="w-4 h-4" />
                 Save
               </Button>
@@ -96,11 +88,7 @@ export const CodeEditor = ({ code, language, isAuthor, onSave }: CodeEditorProps
                 </motion.div>
               )}
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  size="sm"
-                  onClick={handleCopy}
-                  className="h-8 gap-1.5"
-                >
+                <Button size="sm" onClick={handleCopy} className="h-8 gap-1.5">
                   {copied ? (
                     <>
                       <Check className="w-4 h-4" />
@@ -109,7 +97,7 @@ export const CodeEditor = ({ code, language, isAuthor, onSave }: CodeEditorProps
                   ) : (
                     <>
                       <Copy className="w-4 h-4" />
-                      Copy Code
+                      Copy
                     </>
                   )}
                 </Button>
@@ -139,87 +127,3 @@ export const CodeEditor = ({ code, language, isAuthor, onSave }: CodeEditorProps
     </div>
   );
 };
-
-// Add hook usage
-const CodeEditorWithTheme = (props: CodeEditorProps) => {
-  const { theme } = useTheme();
-  return <CodeEditorInner {...props} theme={theme} />;
-};
-
-const CodeEditorInner = ({ code, language, isAuthor, onSave, theme }: CodeEditorProps & { theme: string }) => {
-  const [copied, setCopied] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedCode, setEditedCode] = useState(code);
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleSave = () => {
-    onSave?.(editedCode);
-    setIsEditing(false);
-  };
-
-  const handleCancel = () => {
-    setEditedCode(code);
-    setIsEditing(false);
-  };
-
-  return (
-    <div className="code-container relative h-full">
-      <div className="flex items-center justify-between px-4 py-3 bg-secondary/50 border-b border-border">
-        <div className="flex items-center gap-3">
-          <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-destructive/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-400" />
-            <div className="w-3 h-3 rounded-full bg-green-500" />
-          </div>
-          <span className="text-sm font-medium text-muted-foreground">{language}</span>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          {isEditing ? (
-            <>
-              <Button size="sm" variant="ghost" onClick={handleCancel} className="h-8 gap-1.5">
-                <X className="w-4 h-4" />
-                Cancel
-              </Button>
-              <Button size="sm" onClick={handleSave} className="h-8 gap-1.5">
-                <Save className="w-4 h-4" />
-                Save
-              </Button>
-            </>
-          ) : (
-            <>
-              {isAuthor && (
-                <Button size="sm" variant="outline" onClick={() => setIsEditing(true)} className="h-8 gap-1.5">
-                  <Edit2 className="w-4 h-4" />
-                  Edit
-                </Button>
-              )}
-              <Button size="sm" onClick={handleCopy} className="h-8 gap-1.5">
-                {copied ? <><Check className="w-4 h-4" />Copied!</> : <><Copy className="w-4 h-4" />Copy</>}
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="overflow-auto max-h-[70vh] scrollbar-thin">
-        <CodeMirror
-          value={isEditing ? editedCode : code}
-          onChange={(value) => setEditedCode(value)}
-          extensions={[getLanguageExtension(language)]}
-          editable={isEditing}
-          theme={theme === 'dark' ? 'dark' : 'light'}
-          basicSetup={{ lineNumbers: true, highlightActiveLineGutter: true, highlightActiveLine: isEditing, foldGutter: true }}
-          className="text-sm"
-        />
-      </div>
-    </div>
-  );
-};
-
-export { CodeEditorWithTheme as CodeEditor };
