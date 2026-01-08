@@ -1,85 +1,94 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Save } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { FileUpload } from '@/components/FileUpload';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { toast } from '@/hooks/use-toast';
-import type { Language } from '@/data/mockData';
+import { useSnippets, Language, currentUser } from '@/context/SnippetContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface CreateSnippetModalProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultCategoryId?: string;
 }
 
-export const CreateSnippetModal = ({ isOpen, onClose }: CreateSnippetModalProps) => {
+const languages: Language[] = ['Python', 'Spark Scala', 'SQL', 'JavaScript', 'Java', 'C++', 'Go', 'HTML/CSS'];
+
+export const CreateSnippetModal = ({ isOpen, onClose, defaultCategoryId }: CreateSnippetModalProps) => {
+  const { categories, addSnippet } = useSnippets();
+  const { toast } = useToast();
+  
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [language, setLanguage] = useState<Language | ''>('');
-  const [type, setType] = useState<'JET' | 'Omnia' | ''>('');
+  const [language, setLanguage] = useState<Language>('Python');
+  const [categoryId, setCategoryId] = useState(defaultCategoryId || categories[0]?.id || '');
   const [code, setCode] = useState('');
   const [inputSample, setInputSample] = useState('');
   const [outputSample, setOutputSample] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Update categoryId when defaultCategoryId changes
+  useEffect(() => {
+    if (defaultCategoryId) {
+      setCategoryId(defaultCategoryId);
+    }
+  }, [defaultCategoryId]);
+
   const addTag = () => {
-    const trimmedTag = tagInput.trim().toLowerCase();
-    if (trimmedTag && !tags.includes(trimmedTag)) {
-      setTags([...tags, trimmedTag]);
+    const tag = tagInput.trim().toLowerCase();
+    if (tag && !tags.includes(tag)) {
+      setTags([...tags, tag]);
       setTagInput('');
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addTag();
-    }
+    setTags(tags.filter(t => t !== tagToRemove));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title || !description || !language || !type || !code) {
+    if (!title.trim() || !code.trim() || !categoryId) {
       toast({
-        title: 'Missing fields',
-        description: 'Please fill in all required fields',
-        variant: 'destructive'
+        title: 'Missing Fields',
+        description: 'Please fill in title, code, and select a category.',
+        variant: 'destructive',
       });
       return;
     }
 
     setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
+    addSnippet({
+      categoryId,
+      title: title.trim(),
+      description: description.trim(),
+      language,
+      code: code.trim(),
+      inputSample,
+      outputSample,
+      tags,
+      authorId: currentUser.id,
+      authorName: currentUser.name,
+      authorAvatar: currentUser.avatar,
+    });
+
     toast({
-      title: 'Snippet created!',
-      description: 'Your snippet has been published successfully',
+      title: 'Snippet Created',
+      description: `"${title}" has been published successfully.`,
     });
 
     // Reset form
     setTitle('');
     setDescription('');
-    setLanguage('');
-    setType('');
     setCode('');
     setInputSample('');
     setOutputSample('');
@@ -91,164 +100,100 @@ export const CreateSnippetModal = ({ isOpen, onClose }: CreateSnippetModalProps)
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
-          {/* Backdrop */}
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
           <motion.div
-            className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
 
-          {/* Modal */}
           <motion.div
-            className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-3xl md:w-full md:max-h-[90vh] bg-background rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col"
+            className="relative bg-card border border-border rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-              <h2 className="font-heading text-xl font-bold">Create New Snippet</h2>
-              <Button variant="ghost" size="icon" onClick={onClose}>
-                <X className="w-5 h-5" />
-              </Button>
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h2 className="text-xl font-heading font-bold text-foreground">Create New Snippet</h2>
+              <button onClick={onClose} className="p-2 rounded-lg hover:bg-muted transition-colors">
+                <X className="w-5 h-5 text-muted-foreground" />
+              </button>
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
-              {/* Title & Type */}
-              <div className="grid md:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="title">Title *</Label>
-                  <Input
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g., Convert XLS to CSV"
-                  />
+                  <Label>Category</Label>
+                  <Select value={categoryId} onValueChange={setCategoryId}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {categories.map(cat => (
+                        <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>Type *</Label>
-                  <Select value={type} onValueChange={(val) => setType(val as 'JET' | 'Omnia')}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
+                  <Label>Language</Label>
+                  <Select value={language} onValueChange={(v) => setLanguage(v as Language)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="JET">JET</SelectItem>
-                      <SelectItem value="Omnia">Omnia</SelectItem>
+                      {languages.map(lang => (
+                        <SelectItem key={lang} value={lang}>{lang}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
-              {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description">Description *</Label>
-                <Textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe what this snippet does..."
-                  rows={2}
-                />
+                <Label>Title</Label>
+                <Input placeholder="e.g., Convert XLS to CSV" value={title} onChange={e => setTitle(e.target.value)} />
               </div>
 
-              {/* Language */}
               <div className="space-y-2">
-                <Label>Language *</Label>
-                <Select value={language} onValueChange={(val) => setLanguage(val as Language)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Python">Python</SelectItem>
-                    <SelectItem value="Spark Scala">Spark Scala</SelectItem>
-                    <SelectItem value="SQL">SQL</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Description</Label>
+                <Textarea placeholder="Brief description..." value={description} onChange={e => setDescription(e.target.value)} rows={2} />
               </div>
 
-              {/* Tags */}
+              <div className="space-y-2">
+                <Label>Code</Label>
+                <Textarea placeholder="Paste your code here..." value={code} onChange={e => setCode(e.target.value)} className="font-mono text-sm" rows={8} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FileUpload label="Sample Input (CSV/Excel)" value={inputSample} onChange={setInputSample} accept=".csv,.xlsx,.xls" />
+                <FileUpload label="Sample Output (CSV/Excel)" value={outputSample} onChange={setOutputSample} accept=".csv,.xlsx,.xls" />
+              </div>
+
               <div className="space-y-2">
                 <Label>Tags</Label>
                 <div className="flex gap-2">
-                  <Input
-                    value={tagInput}
-                    onChange={(e) => setTagInput(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Add a tag and press Enter"
-                    className="flex-1"
-                  />
-                  <Button type="button" variant="outline" onClick={addTag}>
-                    <Plus className="w-4 h-4" />
-                  </Button>
+                  <Input placeholder="Add tag..." value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())} />
+                  <Button type="button" variant="outline" onClick={addTag}>Add</Button>
                 </div>
-                {tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {tags.map((tag) => (
-                      <Badge 
-                        key={tag} 
-                        variant="secondary"
-                        className="gap-1 cursor-pointer hover:bg-destructive/10"
-                        onClick={() => removeTag(tag)}
-                      >
-                        {tag}
-                        <X className="w-3 h-3" />
-                      </Badge>
-                    ))}
-                  </div>
-                )}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {tags.map(tag => (
+                    <Badge key={tag} variant="secondary" className="cursor-pointer" onClick={() => removeTag(tag)}>
+                      {tag} ×
+                    </Badge>
+                  ))}
+                </div>
               </div>
 
-              {/* Sample Input/Output */}
-              <div className="grid md:grid-cols-2 gap-4">
-                <FileUpload
-                  label="Sample Input"
-                  value={inputSample}
-                  onChange={setInputSample}
-                />
-                <FileUpload
-                  label="Expected Output"
-                  value={outputSample}
-                  onChange={setOutputSample}
-                />
-              </div>
-
-              {/* Code */}
-              <div className="space-y-2">
-                <Label htmlFor="code">Code *</Label>
-                <Textarea
-                  id="code"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder="Paste your code here..."
-                  rows={10}
-                  className="font-mono text-sm"
-                />
+              <div className="flex gap-3 pt-4 border-t border-border">
+                <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
+                <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                  {isSubmitting ? 'Publishing...' : 'Publish Snippet'}
+                </Button>
               </div>
             </form>
-
-            {/* Footer */}
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border bg-secondary/30">
-              <Button variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button onClick={handleSubmit} disabled={isSubmitting} className="gap-2">
-                {isSubmitting ? (
-                  <>Saving...</>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4" />
-                    Publish Snippet
-                  </>
-                )}
-              </Button>
-            </div>
           </motion.div>
-        </>
+        </motion.div>
       )}
     </AnimatePresence>
   );
