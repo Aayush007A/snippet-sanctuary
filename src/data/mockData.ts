@@ -1,4 +1,4 @@
-export type Language = 'Python' | 'Spark Scala' | 'SQL';
+export type Language = 'Python' | 'Spark Scala' | 'SQL' | 'JavaScript' | 'Java' | 'C++' | 'Go' | 'HTML/CSS';
 
 export interface Review {
   id: string;
@@ -12,7 +12,7 @@ export interface Review {
 
 export interface Snippet {
   id: string;
-  type: 'JET' | 'Omnia';
+  type: string;
   title: string;
   description: string;
   code: string;

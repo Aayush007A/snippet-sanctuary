@@ -3,14 +3,16 @@ import { useParams, Navigate } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { SubtleBackground } from '@/components/SubtleBackground';
 import { SnippetDetailLayout } from '@/components/SnippetDetailLayout';
-import { mockSnippets } from '@/data/mockData';
+// import { mockSnippets } from '@/data/mockData';
+import { useSnippets } from '@/context/SnippetContext';
 
 const SnippetDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const { getSnippetById } = useSnippets();
 
   const snippet = useMemo(() => {
-    return mockSnippets.find(s => s.id === id);
-  }, [id]);
+    return getSnippetById(id || '');
+  }, [id, getSnippetById]);
 
   if (!snippet) {
     return <Navigate to="/" replace />;
