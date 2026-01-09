@@ -7,7 +7,6 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import { SnippetProvider } from "@/context/SnippetContext";
 import Index from "./pages/Index";
 import CategoryPage from "./pages/CategoryPage";
-import AllCategories from "./pages/AllCategories";
 import SnippetDetail from "./pages/SnippetDetail";
 import NotFound from "./pages/NotFound";
 
@@ -23,7 +22,6 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/categories" element={<AllCategories />} />
               <Route path="/category/:categoryId" element={<CategoryPage />} />
               <Route path="/snippet/:id" element={<SnippetDetail />} />
               <Route path="*" element={<NotFound />} />
