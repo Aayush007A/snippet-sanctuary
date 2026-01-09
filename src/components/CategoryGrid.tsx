@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Zap, Globe, Plus, ArrowRight, FolderCode, Trash2 } from 'lucide-react';
+import { Zap, Globe, Plus, ArrowRight, FolderCode, Database, Server, Code2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSnippets, Category } from '@/context/SnippetContext';
 import { useState } from 'react';
@@ -9,16 +9,18 @@ const iconMap: Record<string, React.ReactNode> = {
   Zap: <Zap className="w-8 h-8 text-primary-foreground" />,
   Globe: <Globe className="w-8 h-8 text-primary-foreground" />,
   FolderCode: <FolderCode className="w-8 h-8 text-primary-foreground" />,
+  Database: <Database className="w-8 h-8 text-primary-foreground" />,
+  Server: <Server className="w-8 h-8 text-primary-foreground" />,
+  Code2: <Code2 className="w-8 h-8 text-primary-foreground" />,
 };
 
 interface CategoryCardProps {
   category: Category;
   index: number;
   snippetCount: number;
-  onDelete?: () => void;
 }
 
-const CategoryCard = ({ category, index, snippetCount, onDelete }: CategoryCardProps) => {
+const CategoryCard = ({ category, index, snippetCount }: CategoryCardProps) => {
   const navigate = useNavigate();
 
   return (
@@ -43,19 +45,6 @@ const CategoryCard = ({ category, index, snippetCount, onDelete }: CategoryCardP
           whileHover={{ opacity: 0.08 }}
           transition={{ duration: 0.3 }}
         />
-
-        {/* Delete button for non-default categories */}
-        {!category.isDefault && onDelete && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-            className="absolute top-4 right-4 p-2 rounded-lg bg-destructive/10 text-destructive opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/20"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        )}
 
         {/* Icon */}
         <motion.div
@@ -129,28 +118,35 @@ const CreateCategoryCard = ({ index, onClick }: { index: number; onClick: () => 
   );
 };
 
-export const CategoryGrid = () => {
-  const { categories, snippets, deleteCategory } = useSnippets();
+interface CategoryGridProps {
+  maxVisible?: number;
+  showAll?: boolean;
+}
+
+export const CategoryGrid = ({ maxVisible = 3, showAll = false }: CategoryGridProps) => {
+  const { categories, snippets } = useSnippets();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const getSnippetCount = (categoryId: string) => {
     return snippets.filter(s => s.categoryId === categoryId).length;
   };
 
+  // Show all categories or limit to maxVisible (not counting the create card)
+  const visibleCategories = showAll ? categories : categories.slice(0, maxVisible);
+
   return (
     <>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {categories.map((category, index) => (
+        {visibleCategories.map((category, index) => (
           <CategoryCard
             key={category.id}
             category={category}
             index={index}
             snippetCount={getSnippetCount(category.id)}
-            onDelete={!category.isDefault ? () => deleteCategory(category.id) : undefined}
           />
         ))}
         <CreateCategoryCard 
-          index={categories.length} 
+          index={visibleCategories.length} 
           onClick={() => setIsCreateModalOpen(true)}
         />
       </div>
