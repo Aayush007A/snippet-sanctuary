@@ -46,6 +46,7 @@ interface SnippetContextType {
   categories: Category[];
   snippets: Snippet[];
   addCategory: (category: Omit<Category, 'id' | 'createdAt' | 'isDefault'>) => void;
+  updateCategory: (id: string, updates: Partial<Category>) => void;
   deleteCategory: (id: string) => void;
   addSnippet: (snippet: Omit<Snippet, 'id' | 'createdAt' | 'updatedAt' | 'reviews'>) => void;
   updateSnippet: (id: string, updates: Partial<Snippet>) => void;
@@ -271,8 +272,14 @@ export const SnippetProvider = ({ children }: { children: ReactNode }) => {
     setCategories(prev => [...prev, newCategory]);
   }, [setCategories]);
 
+  const updateCategory = useCallback((id: string, updates: Partial<Category>) => {
+    setCategories(prev => prev.map(c => 
+      c.id === id ? { ...c, ...updates } : c
+    ));
+  }, [setCategories]);
+
   const deleteCategory = useCallback((id: string) => {
-    setCategories(prev => prev.filter(c => !c.isDefault && c.id !== id));
+    setCategories(prev => prev.filter(c => c.isDefault || c.id !== id));
     setSnippets(prev => prev.filter(s => s.categoryId !== id));
   }, [setCategories, setSnippets]);
 
@@ -327,6 +334,7 @@ export const SnippetProvider = ({ children }: { children: ReactNode }) => {
       categories,
       snippets,
       addCategory,
+      updateCategory,
       deleteCategory,
       addSnippet,
       updateSnippet,

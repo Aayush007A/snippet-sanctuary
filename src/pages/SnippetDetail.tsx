@@ -1,26 +1,37 @@
-import { useMemo } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
-import { Navbar } from '@/components/Navbar';
+import { useParams, useNavigate } from 'react-router-dom';
 import { SubtleBackground } from '@/components/SubtleBackground';
-import { SnippetDetailLayout } from '@/components/SnippetDetailLayout';
-import { mockSnippets } from '@/data/mockData';
+import { WorkbenchLayout } from '@/components/WorkbenchLayout';
+import { useSnippets } from '@/context/SnippetContext';
 
 const SnippetDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { getSnippetById } = useSnippets();
 
-  const snippet = useMemo(() => {
-    return mockSnippets.find(s => s.id === id);
-  }, [id]);
+  const snippet = getSnippetById(id || '');
 
   if (!snippet) {
-    return <Navigate to="/" replace />;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-heading font-bold text-foreground mb-4">Snippet Not Found</h1>
+          <button
+            onClick={() => navigate('/')}
+            className="text-primary hover:underline"
+          >
+            Back to Home
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-background relative">
       <SubtleBackground />
-      <Navbar />
-      <SnippetDetailLayout snippet={snippet} />
+      <div className="relative z-10">
+        <WorkbenchLayout snippet={snippet} />
+      </div>
     </div>
   );
 };
