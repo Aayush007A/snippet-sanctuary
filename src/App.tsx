@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import CategoryPage from "./pages/CategoryPage";
 import SnippetDetail from "./pages/SnippetDetail";
 import NotFound from "./pages/NotFound";
+import AllCategories from "./pages/AllCategories"; 
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/categories" element={<AllCategories />} /> 
               <Route path="/category/:categoryId" element={<CategoryPage />} />
               <Route path="/snippet/:id" element={<SnippetDetail />} />
               <Route path="*" element={<NotFound />} />

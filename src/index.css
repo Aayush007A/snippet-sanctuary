@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap');
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
@@ -5,6 +6,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
+=======
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap");
+>>>>>>> 3560511 (UI Locked)
 
 @tailwind base;
 @tailwind components;
@@ -44,9 +48,27 @@
     --radius: 1.5rem;
 
     /* Custom tokens */
+<<<<<<< HEAD
     --jet-gradient: linear-gradient(135deg, hsl(221, 83%, 53%) 0%, hsl(262, 83%, 58%) 100%);
     --omnia-gradient: linear-gradient(135deg, hsl(142, 71%, 45%) 0%, hsl(172, 66%, 50%) 100%);
     --create-gradient: linear-gradient(135deg, hsl(25, 95%, 53%) 0%, hsl(350, 89%, 60%) 100%);
+=======
+    --jet-gradient: linear-gradient(
+      135deg,
+      hsl(221, 83%, 53%) 0%,
+      hsl(262, 83%, 58%) 100%
+    );
+    --omnia-gradient: linear-gradient(
+      135deg,
+      hsl(142, 71%, 45%) 0%,
+      hsl(172, 66%, 50%) 100%
+    );
+    --create-gradient: linear-gradient(
+      135deg,
+      hsl(25, 95%, 53%) 0%,
+      hsl(350, 89%, 60%) 100%
+    );
+>>>>>>> 3560511 (UI Locked)
 
     --star-gold: 45 93% 47%;
     --star-empty: 214 32% 85%;
@@ -123,6 +145,13 @@
     --input: 240 5% 33%;
     --ring: 328 85% 70%;
 
+<<<<<<< HEAD
+=======
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 221 83% 58%;
+
+>>>>>>> 3560511 (UI Locked)
     --glass-bg: rgba(10, 10, 10, 0.95);
     --glass-border: rgba(255, 255, 255, 0.08);
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -159,16 +188,29 @@
   * {
     @apply border-border;
   }
-
+  
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Poppins", sans-serif;
     @apply font-bold tracking-tight;
   }
+}
+
+.cm-editor {
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+.cm-gutters {
+  transition: background-color 300ms ease, border-color 300ms ease;
 }
 
 @layer components {
@@ -204,12 +246,13 @@
 
   .code-container {
     @apply rounded-xl overflow-hidden border border-border;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+      0 2px 4px -1px rgba(0, 0, 0, 0.03);
   }
 
   .data-panel {
     @apply bg-secondary/50 rounded-xl border border-border p-4;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
   }
 
   .comment-card {
@@ -258,7 +301,8 @@
   }
 
   @keyframes pulse-glow {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.5);
     }
     50% {
