@@ -5,8 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ThemeToggle } from '@/components/ThemeToggle';
-// import { currentUser } from '@/data/mockData';
-import { currentUser } from '@/context/SnippetContext';
+import { currentUser } from '@/data/mockData';
 import { useTheme } from '@/hooks/useTheme';
 
 export const Navbar = () => {
